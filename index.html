@@ -1,0 +1,24 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<title>Scattering on nucleus</title> 
+	
+	<link rel="stylesheet" href="style.css" type="text/css" /> 
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="Scattering.js"></script>
+	<script>
+	$(document).ready(function() {
+		var scattering = new Scattering(document.getElementById('frame')) ;
+		
+		scattering.render() ;
+	}) ;
+	</script>
+</head>
+<body>
+	
+	<canvas id="frame" width="1500" height="1000">no canvas</canvas>
+	
+</body>
+</html>
