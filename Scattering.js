@@ -16,10 +16,17 @@ Scattering = function(frame) {
 } ;
 
 Scattering.prototype.calculateAcceleration = function() {
-	var radius = Math.sqrt(this.particle.position.x*this.particle.position.x + this.particle.position.y*this.particle.position.y) ;
-	var coulomb_factor = (Math.pow(this.const.e, 2)) / (4*Math.PI*this.const.epsilon_0 * this.const.h__si * this.const.c) ;
+	var radius = Math.sqrt(this.particle.position.x*this.particle.position.x + this.particle.position.y*this.particle.position.y) * Math.pow(10, -15) ;
 	
-	var factor = coulomb_factor * (this.const.h_ * this.const.c) / (this.const.u_nat) * (this.particle.Z * this.options.nucleus.Z) / (this.particle.A) * 1 / Math.pow(radius, 3) ;
+	var coulomb_factor = (Math.pow(this.const.e, 2)) / (4*Math.PI*this.const.epsilon_0 * this.const.h__si * this.const.c) ;
+
+	var h_c = (this.const.h_ * this.const.c) /** Math.pow(10, 15)*/ ;
+	
+	var factor = coulomb_factor * ( h_c / (this.const.u_nat) ) * ( (this.particle.Z * this.options.nucleus.Z) / (this.particle.A) ) * ( 1 / Math.pow(radius, 3) ) ;
+	
+	
+	//console.log( coulomb_factor * ( h_c / this.const.u_nat ) * ((this.particle.Z * this.options.nucleus.Z)/ this.particle.A ) * (1 / Math.pow(radius, 3)) );
+	
 
 	return {
 		x: this.particle.position.x * factor,
@@ -31,7 +38,7 @@ Scattering.prototype.render = function(options) {
 	var self = this ;
 
 	this.options = $.extend({
-		delta_t: 3*Math.pow(10, -13),
+		delta_t: 1.5*Math.pow(10, -13),
 		nucleus: {
 			color: "rgba(0, 0, 200, 0.5)",
 			radius: 50,
@@ -40,12 +47,13 @@ Scattering.prototype.render = function(options) {
 		particle: {
 			position: {
 				x: -500,
-				y: 50
+				y: 3
 			},
 			Z: 2,
 			A: 4,
 			kinetic: 5*Math.pow(10, 6) // eV
 		},
+		draw: true
 	}, options) ;
 	
 	
@@ -56,28 +64,22 @@ Scattering.prototype.render = function(options) {
 		y: 0
 	} ;
 	
-	
-	this.ctx.translate(750, 500) ;
-	this.ctx.scale(1, -1) ;
-	
-	this.drawNucleus(0, 0) ;
-	
-	this.drawCross(this.particle.position.x, this.particle.position.y) ;
-	
-	//this.moveParticle() ;
-	
-	for(i=0;i<60;i++) {
+	if(this.options.draw) {
+		this.ctx.translate(750, 500) ;
+		this.ctx.scale(1, -1) ;
 		
-		//console.log('acc: ') ;
-		//console.log(this.calculateAcceleration()) ;
-		
-		//console.log('velo: ') ;
-		//console.log(this.particle.velocity) ;
-		
+		this.drawNucleus(0, 0) ;
+	
+		this.drawCross(this.particle.position.x, this.particle.position.y) ;	
+	}
+	for(i=0;i<130;i++) {
 		this.updateVelocity(this.calculateAcceleration()) ;
 		
 		this.moveParticle() ;
-		this.drawCross(this.particle.position.x, this.particle.position.y) ;
+		
+		if(this.options.draw) {
+			this.drawCross(this.particle.position.x, this.particle.position.y) ;
+		}
 	}
 	
 	
@@ -92,7 +94,6 @@ Scattering.prototype.updateVelocity = function(a) {
 } ;
 
 Scattering.prototype.moveParticle = function() {
-	
 	this.particle.position = {
 		x: this.particle.position.x + this.particle.velocity.x * this.options.delta_t,
 		y: this.particle.position.y + this.particle.velocity.y * this.options.delta_t
@@ -115,11 +116,11 @@ Scattering.prototype.drawCross = function(x, y) {
 	
 	ctx.beginPath() ;
 	
-	ctx.moveTo(x-5, y-5) ;
-	ctx.lineTo(x+5, y+5) ;
+	ctx.moveTo(x-2, y-2) ;
+	ctx.lineTo(x+2, y+2) ;
 	                   
-	ctx.moveTo(x+5, y-5) ;
-	ctx.lineTo(x-5, y+5) ;
+	ctx.moveTo(x+2, y-2) ;
+	ctx.lineTo(x-2, y+2) ;
 	
 	ctx.stroke() ;
 	
