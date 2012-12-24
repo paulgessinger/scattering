@@ -1,6 +1,9 @@
 Scattering = function(frame) {
 	this.ctx = frame.getContext('2d') ;
 	
+	this.ctx.translate(600, 300) ;
+	this.ctx.scale(1, -1) ;
+	
 	this.const = {
 		u_nat: 931.5*Math.pow(10, 6), // eV/c^2
 		u_si: 1.660539 * Math.pow(10, -27), // kg
@@ -37,7 +40,12 @@ Scattering.prototype.calculateAcceleration = function() {
 Scattering.prototype.render = function(options) {
 	var self = this ;
 
+	console.log('rendering') ;
+	console.log(options) ;
+	
 	this.options = $.extend({
+		cross_size: 2,
+		runs: 130,
 		delta_t: 1.5*Math.pow(10, -13),
 		nucleus: {
 			color: "rgba(0, 0, 200, 0.5)",
@@ -47,7 +55,7 @@ Scattering.prototype.render = function(options) {
 		particle: {
 			position: {
 				x: -500,
-				y: 3
+				y: 10
 			},
 			Z: 2,
 			A: 4,
@@ -55,7 +63,6 @@ Scattering.prototype.render = function(options) {
 		},
 		draw: true
 	}, options) ;
-	
 	
 	this.particle = this.options.particle ;
 	
@@ -65,14 +72,15 @@ Scattering.prototype.render = function(options) {
 	} ;
 	
 	if(this.options.draw) {
-		this.ctx.translate(750, 500) ;
-		this.ctx.scale(1, -1) ;
+		
+		this.clearCanvas() ;
+		this.ctx.moveTo(0, 0) ;
 		
 		this.drawNucleus(0, 0) ;
 	
 		this.drawCross(this.particle.position.x, this.particle.position.y) ;	
 	}
-	for(i=0;i<130;i++) {
+	for(i=0;i<this.options.runs;i++) {
 		this.updateVelocity(this.calculateAcceleration()) ;
 		
 		this.moveParticle() ;
@@ -85,6 +93,10 @@ Scattering.prototype.render = function(options) {
 	
 	
 } ;
+
+Scattering.prototype.clearCanvas = function() {
+	this.ctx.clearRect (-5000, -5000, 10000, 10000);
+}
 
 Scattering.prototype.updateVelocity = function(a) {
 	this.particle.velocity = {
@@ -116,11 +128,10 @@ Scattering.prototype.drawCross = function(x, y) {
 	
 	ctx.beginPath() ;
 	
-	ctx.moveTo(x-2, y-2) ;
-	ctx.lineTo(x+2, y+2) ;
-	                   
-	ctx.moveTo(x+2, y-2) ;
-	ctx.lineTo(x-2, y+2) ;
+	ctx.moveTo(x-this.options.cross_size, y-this.options.cross_size) ;
+	ctx.lineTo(x+this.options.cross_size, y+this.options.cross_size) ;
+	ctx.moveTo(x+this.options.cross_size, y-this.options.cross_size) ;
+	ctx.lineTo(x-this.options.cross_size, y+this.options.cross_size) ;
 	
 	ctx.stroke() ;
 	

@@ -1,5 +1,32 @@
 #frame {
-	width:1500px;
-	height:1000px;
+	width:1000px;
+	height:600px;
 	border:1px solid black;
+}
+
+#controls {
+	width:1000px;
+	font-size:12px;
+}
+
+#controls input {
+	width:30px;
+}
+
+#controls > table td {
+	padding:10px;
+	
+}
+
+.slider {
+	width:200px;
+	display:inline-block;
+}
+
+.slider#nucleus_z {
+	width:400px;
+}
+
+.ui-slider-handle {
+	cursor:move;
 }
