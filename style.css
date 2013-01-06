@@ -5,7 +5,7 @@
 }
 
 #controls {
-	width:1000px;
+	width:1200px;
 	font-size:12px;
 }
 
@@ -24,6 +24,10 @@
 }
 
 .slider#nucleus_z {
+	width:400px;
+}
+
+.slider#y {
 	width:400px;
 }
 

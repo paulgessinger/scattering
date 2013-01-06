@@ -97,13 +97,13 @@
 	$(function() {
 	    $( "#y" ).slider({
 	        value: base.particle.position.y,
-	        min: 0,
+	        min: -200,
 	        max: 200,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#y_val" ).val( ui.value );
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#y_val" ).val( ui.value ) ;
 				
-				base.particle.position.y = ui.value ;
+				base.particle.position.y = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -115,10 +115,10 @@
 	        min: 0.1,
 	        max: 5.0,
 	        step: 0.1,
-	        slide: function( event, ui ) {
-	            $( "#delta_t_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#delta_t_val" ).val(ui.value);
 				
-				base.delta_t = ui.value * Math.pow(10, -13) ;
+				base.delta_t = parseFloat(ui.value) * Math.pow(10, -13) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -130,10 +130,10 @@
 	        min: 100,
 	        max: 2000,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#runs_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#runs_val" ).val(ui.value);
 				
-				base.runs = ui.value ;
+				base.runs = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -145,10 +145,10 @@
 	        min: 1,
 	        max: 10,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#cross_size_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#cross_size_val" ).val(ui.value);
 				
-				base.cross_size = ui.value ;
+				base.cross_size = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -160,10 +160,10 @@
 	        min: 1,
 	        max: 50,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#particle_a_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#particle_a_val" ).val(ui.value);
 				
-				base.particle.A = ui.value ;
+				base.particle.A = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -175,10 +175,10 @@
 	        min: -50,
 	        max: 50,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#particle_z_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#particle_z_val" ).val(ui.value);
 				
-				base.particle.Z = ui.value ;
+				base.particle.Z = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -191,10 +191,10 @@
 	        min: 1,
 	        max: 30,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#kinetic_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#kinetic_val" ).val(ui.value);
 				
-				base.particle.kinetic = ui.value * Math.pow(10, 6) ;
+				base.particle.kinetic = parseInt(ui.value) * Math.pow(10, 6) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -213,10 +213,10 @@
 	        min: -100,
 	        max: 300,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#nucleus_z_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#nucleus_z_val" ).val(ui.value);
 				
-				base.nucleus.Z = ui.value ;
+				base.nucleus.Z = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
@@ -229,16 +229,48 @@
 	        min: 10,
 	        max: 100,
 	        step: 1,
-	        slide: function( event, ui ) {
-	            $( "#nucleus_radius_val" ).val(ui.value);
+	        slide: function( event, ui, reset) {
+	            if(reset !== false) $( "#nucleus_radius_val" ).val(ui.value);
 				
-				base.nucleus.radius = ui.value ;
+				base.nucleus.radius = parseInt(ui.value) ;
 				
 				scattering.render(jQuery.extend(true, {}, base)) ;
 	        }
 	    });
 	    $( "#nucleus_radius_val" ).val(base.nucleus.radius) ;
 		
+		
+		
+		// update on type
+		$('input').bind('keyup', function(event) {
+			var okay_codes = [8,49,50,51,52,53,54,55,56,57,48] ;
+			
+			//console.log(event.keyCode) ;
+			
+			var val = $(this).val() ;
+			
+			console.log() ;
+			
+			if(okay_codes.indexOf(event.keyCode) === -1) {
+				return ;	
+			}
+			
+			if(isNaN(val)) {
+				return;
+			}
+			
+			// update slider an render
+			
+			var slider_id = $(this).attr('id').replace('_val', '') ;
+			
+			$('#'+slider_id).slider('value', val) ;
+			
+			console.log(val) ;
+			var callback = $('#'+slider_id).slider('option', 'slide') ;
+			
+			callback({}, {value: val}, false) ;
+			
+		}) ;
 		
 	});
 	</script>
